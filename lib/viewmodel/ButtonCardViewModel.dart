@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
+
 class ButtonCardViewModel {
 
   var title = "title";
-  var buttonText = "button_text";
-  var description = "description";
+  var buttonIcon = Icons.build;
+  var buttonText = "동작";
+  var description = "설명";
 
   void onButtonClicked() {
 

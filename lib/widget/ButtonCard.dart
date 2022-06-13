@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:soohwakhangflutter/viewmodel/ButtonCardViewModel.dart';
-import 'package:soohwakhangflutter/viewmodel/InfoCardViewModel.dart';
 
 class ButtonCard extends StatefulWidget {
   const ButtonCard({Key? key, required this.viewModel}) : super(key: key);
@@ -58,7 +57,7 @@ Widget renderTitleStatus(ButtonCardViewModel viewModel) {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF333333),
+                    color: Colors.green[600],
                   ),
                 ),
               ],
@@ -68,8 +67,9 @@ Widget renderTitleStatus(ButtonCardViewModel viewModel) {
 
         ElevatedButton.icon( onPressed: () {
           viewModel.onButtonClicked();
-        }, icon: Icon(Icons.build, size: 18),
-          label: Text("동작"),
+        },
+          icon: Icon(viewModel.buttonIcon, size: 18),
+          label: Text(viewModel.buttonText),
           style: TextButton.styleFrom(
             primary: Colors.green[200],
             backgroundColor: Colors.green[400],),
@@ -91,7 +91,7 @@ Widget renderText(ButtonCardViewModel viewModel) {
           viewModel.description,
           style: TextStyle(
             fontSize: 13,
-            color: Color(0xFF333333),
+            color: Colors.green[400],
           ),
         ),
       ],

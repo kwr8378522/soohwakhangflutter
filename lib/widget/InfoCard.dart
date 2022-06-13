@@ -57,7 +57,7 @@ Widget renderTitleStatus(InfoCardViewModel viewModel) {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF333333),
+                    color: Colors.green[600],
                   ),
                 ),
               ],
@@ -88,7 +88,7 @@ Widget renderText(InfoCardViewModel viewModel) {
           viewModel.description,
           style: TextStyle(
             fontSize: 13,
-            color: Color(0xFF333333),
+            color: Colors.green[400],
           ),
         ),
       ],

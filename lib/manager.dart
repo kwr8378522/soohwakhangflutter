@@ -22,6 +22,8 @@ class Manager {
 
   Manager() {
     updateInfoViewModel.title = "서버";
+    updateInfoViewModel.buttonText = "연결하기";
+    updateInfoViewModel.buttonIcon = Icons.cached;
     updateInfoViewModel.description = "서버로부터 최신 정보를 받아올 수 있어요.";
 
     tempuratureViewModel.title = "온도";
@@ -37,9 +39,11 @@ class Manager {
         "지금 바로 습도 정보를 수확행 HARDWARE로부터 가져와보세요!";
 
     ledViewModel.title = "LED";
+    ledViewModel.buttonIcon = Icons.lightbulb;
     ledViewModel.description = "온도가 낮을 때, LED를 켜면 온도를 상승시킬 수 있어요";
 
-    waterpumpViewModel.title = "Waterpump";
+    waterpumpViewModel.title = "워터펌프";
+    waterpumpViewModel.buttonIcon = Icons.invert_colors;
     waterpumpViewModel.description = "습도가 낮을 때, waterpump를 켜면 습도를 높일 수 있어요";
   }
 

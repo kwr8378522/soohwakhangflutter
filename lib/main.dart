@@ -41,18 +41,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-
-          child: Column(
-            children: <Widget>[
-              ButtonCard(viewModel: manager.updateInfoViewModel),
-              InfoCard(viewModel: manager.tempuratureViewModel),
-              InfoCard(viewModel: manager.humidViewModel),
-              ButtonCard(viewModel: manager.ledViewModel),
-              ButtonCard(viewModel: manager.waterpumpViewModel),
-            ],
-          )
-      ),
+        body:  ListView(
+          padding: const EdgeInsets.all(8),
+          children: <Widget>[
+            ButtonCard(viewModel: manager.updateInfoViewModel),
+            InfoCard(viewModel: manager.tempuratureViewModel),
+            InfoCard(viewModel: manager.humidViewModel),
+            ButtonCard(viewModel: manager.ledViewModel),
+            ButtonCard(viewModel: manager.waterpumpViewModel),
+          ],
+        )
     );
   }
 }
