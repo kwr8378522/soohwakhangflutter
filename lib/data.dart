@@ -4,7 +4,7 @@ class Data {
   final LED = 0;
   final WATERPUMP = 1;
 
-  var URL = 'ws://121.136.192.61:4650/farmuser';
+  var URL = 'wss://121.136.192.61:4650/farmuser';
 
   var serverStatusText = "서버 상태 : 알 수 없음";
   var serverBackgroundColor = Colors.red[400];
