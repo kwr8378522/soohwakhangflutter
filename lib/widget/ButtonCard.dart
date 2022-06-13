@@ -87,13 +87,13 @@ Widget renderText(ButtonCardViewModel viewModel) {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(
+        Expanded( child :Text(
           viewModel.description,
           style: TextStyle(
             fontSize: 13,
             color: Colors.green[400],
           ),
-        ),
+        )),
       ],
     ),
   );

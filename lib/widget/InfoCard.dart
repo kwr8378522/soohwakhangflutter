@@ -27,13 +27,13 @@ class _InfoCardState extends State<InfoCard> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          renderTitleStatus(widget.viewModel),
-          renderText(widget.viewModel)
-        ],
-      ),
+      child: Expanded(
+          child: Column(
+            children: <Widget>[
+              renderTitleStatus(widget.viewModel),
+              renderText(widget.viewModel)
+            ],
+          )),
     );
   }
 }
@@ -43,7 +43,6 @@ Widget renderTitleStatus(InfoCardViewModel viewModel) {
     margin: EdgeInsets.only(top: 16),
     padding: EdgeInsets.symmetric(horizontal: 16),
     child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Row(
@@ -81,16 +80,14 @@ Widget renderText(InfoCardViewModel viewModel) {
     margin: EdgeInsets.only(top: 16, bottom : 16),
     padding: EdgeInsets.symmetric(horizontal: 16),
     child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(
+        Expanded( child :Text(
           viewModel.description,
           style: TextStyle(
             fontSize: 13,
             color: Colors.green[400],
           ),
-        ),
+        )),
       ],
     ),
   );

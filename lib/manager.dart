@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soohwakhangflutter/viewmodel/ButtonCardViewModel.dart';
 import 'package:soohwakhangflutter/viewmodel/InfoCardViewModel.dart';
+import 'package:soohwakhangflutter/viewmodel/TitleItemViewModel.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'dart:convert';
@@ -9,6 +10,7 @@ import 'data.dart';
 
 class Manager {
 
+  var titleItemViewModel = TitleItemViewModel();
   var updateInfoViewModel = ButtonCardViewModel();
   var tempuratureViewModel = InfoCardViewModel();
   var humidViewModel = InfoCardViewModel();
@@ -21,6 +23,7 @@ class Manager {
   bool isWebSocketRunning = false;
 
   Manager() {
+
     updateInfoViewModel.title = "서버";
     updateInfoViewModel.buttonText = "연결하기";
     updateInfoViewModel.buttonIcon = Icons.cached;

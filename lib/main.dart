@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soohwakhangflutter/widget/ButtonCard.dart';
 import 'package:soohwakhangflutter/widget/InfoCard.dart';
+import 'package:soohwakhangflutter/widget/TitleItem.dart';
 
 import 'manager.dart';
 
@@ -41,9 +42,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:  ListView(
+        body: ListView(
           padding: const EdgeInsets.all(8),
           children: <Widget>[
+            TitleItem(viewModel: manager.titleItemViewModel),
             ButtonCard(viewModel: manager.updateInfoViewModel),
             InfoCard(viewModel: manager.tempuratureViewModel),
             InfoCard(viewModel: manager.humidViewModel),
