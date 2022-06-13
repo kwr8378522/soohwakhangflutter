@@ -27,13 +27,13 @@ class _InfoCardState extends State<InfoCard> {
           ),
         ],
       ),
-      child: Expanded(
+
           child: Column(
             children: <Widget>[
               renderTitleStatus(widget.viewModel),
               renderText(widget.viewModel)
             ],
-          )),
+          ),
     );
   }
 }
@@ -79,7 +79,10 @@ Widget renderText(InfoCardViewModel viewModel) {
   return Container(
     margin: EdgeInsets.only(top: 16, bottom : 16),
     padding: EdgeInsets.symmetric(horizontal: 16),
+
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Expanded( child :Text(
           viewModel.description,
