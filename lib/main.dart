@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soohwakhangflutter/widget/InfoCard.dart';
 
 import 'manager.dart';
 
@@ -42,10 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("수확행"),
-        centerTitle: true,
-      ),
       body: Center(
 
           child: Column(
@@ -110,53 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: ROW_HEIGHT,
               ),
 
-              SizedBox(
-                height: 10.0,
-              ),
-
-              Container(
-                child: Text(
-                  manager.data.tempStatusText,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.red[400],
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                ),
-                width: ROW_WIDTH,
-                height: ROW_HEIGHT,
-              ),
-
-              SizedBox(
-                height: 10.0,
-              ),
-
-              Container(
-                child: Text(
-                  manager.data.humidStatusText,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.red[400],
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                ),
-                width: ROW_WIDTH,
-                height: ROW_HEIGHT,
-              ),
-
-              const SizedBox(
-                height: 10.0,
-              ),
+              InfoCard(viewModel: manager.tempuratureViewModel),
+              InfoCard(viewModel: manager.humidViewModel),
 
               Container(
                 child: Row(

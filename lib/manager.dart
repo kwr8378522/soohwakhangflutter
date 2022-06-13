@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soohwakhangflutter/viewmodel/InfoCardViewModel.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'dart:convert';
@@ -7,10 +8,27 @@ import 'data.dart';
 
 class Manager {
 
+  var tempuratureViewModel = InfoCardViewModel();
+  var humidViewModel = InfoCardViewModel();
+
   var data = Data();
 
   WebSocketChannel? channel;
   bool isWebSocketRunning = false;
+
+  Manager() {
+    tempuratureViewModel.title = "온도";
+    tempuratureViewModel.status = "알 수 없음";
+    tempuratureViewModel.text = "온도는 식물에게 중요한 요소에요.\n"
+        "온도는 식물의 탄소동화작용, 호흡작용, 증산 작용 등 생리적 작용에 영향을 준답니다.\n"
+        "지금 바로 온도 정보를 가져와서 수확행 AI 진단을 받아보세요!";
+
+    humidViewModel.title = "습도";
+    humidViewModel.status = "알 수 없음";
+    humidViewModel.text = "습도도 온도 만큼이나 중요한 요소에요.\n "
+        "식물은 수분의 흡수량과 잎에서 내보내는 증발량에 균형이 이루어짐으로써 정상적으로 자라게 되요.\n"
+        "지금 바로 습도 정보를 수확행 HARDWARE로부터 가져와보세요!";
+  }
 
   void updateCurrentStatus() {
     startStreamWithListener((event) {
@@ -89,8 +107,8 @@ class Manager {
       data.serverStatusText = "서버 상태 : 연결됨";
       data.serverBackgroundColor = Colors.green[400];
 
-      data.tempStatusText = "온도 : ${value['temperature']}";
-      data.humidStatusText = "습도 : ${value['humid']}";
+      tempuratureViewModel.status = value['temperature'];
+      humidViewModel.status = value['humid'];
 
       if (value['led'] == 1) {
         data.ledStatusText = "상태 : 켜짐";
