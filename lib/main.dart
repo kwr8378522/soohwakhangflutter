@@ -49,6 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ButtonCard(viewModel: manager.updateInfoViewModel),
             InfoCard(viewModel: manager.tempuratureViewModel),
             InfoCard(viewModel: manager.humidViewModel),
+            InfoCard(viewModel: manager.soilMoistureViewModel),
             ButtonCard(viewModel: manager.ledViewModel),
             ButtonCard(viewModel: manager.waterpumpViewModel),
           ],

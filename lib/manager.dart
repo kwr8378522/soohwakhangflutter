@@ -11,9 +11,13 @@ import 'data.dart';
 class Manager {
 
   var titleItemViewModel = TitleItemViewModel();
+
   var updateInfoViewModel = ButtonCardViewModel();
+
   var tempuratureViewModel = InfoCardViewModel();
   var humidViewModel = InfoCardViewModel();
+  var soilMoistureViewModel = InfoCardViewModel();
+
   var ledViewModel = ButtonCardViewModel();
   var waterpumpViewModel = ButtonCardViewModel();
 
@@ -37,9 +41,14 @@ class Manager {
 
     humidViewModel.title = "습도";
     humidViewModel.status = "알 수 없음";
-    humidViewModel.description = "습도도 온도 만큼이나 중요한 요소에요.\n "
+    humidViewModel.description = "습도도 온도 만큼이나 중요한 요소에요.\n"
         "식물은 수분의 흡수량과 잎에서 내보내는 증발량에 균형이 이루어짐으로써 정상적으로 자라게 되요.\n"
         "지금 바로 습도 정보를 수확행 HARDWARE로부터 가져와보세요!";
+
+    soilMoistureViewModel.title = "토양 수분";
+    soilMoistureViewModel.status = "알 수 없음";
+    soilMoistureViewModel.description = "토양 수분 센서를 통해 토양의 수분 수치를 가져와요.\n"
+        "지금 바로 토양 수분 정보를 수확행 HARDWARE로부터 가져와보세요!";
 
     ledViewModel.title = "LED";
     ledViewModel.buttonIcon = Icons.lightbulb;
