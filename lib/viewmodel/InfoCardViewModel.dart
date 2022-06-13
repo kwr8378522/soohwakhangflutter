@@ -2,7 +2,7 @@ class InfoCardViewModel {
 
   var title = "title";
   var status = "status";
-  var text = "text";
+  var description = "description";
 
   void onInfoUpdate() {
 

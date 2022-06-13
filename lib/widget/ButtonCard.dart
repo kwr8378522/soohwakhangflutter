@@ -1,17 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:soohwakhangflutter/viewmodel/ButtonCardViewModel.dart';
 import 'package:soohwakhangflutter/viewmodel/InfoCardViewModel.dart';
 
-class InfoCard extends StatefulWidget {
-  const InfoCard({Key? key, required this.viewModel}) : super(key: key);
+class ButtonCard extends StatefulWidget {
+  const ButtonCard({Key? key, required this.viewModel}) : super(key: key);
 
-  final InfoCardViewModel viewModel;
+  final ButtonCardViewModel viewModel;
 
   @override
-  State<InfoCard> createState() => _InfoCardState();
+  State<ButtonCard> createState() => _ButtonCardState();
 }
 
-class _InfoCardState extends State<InfoCard> {
+class _ButtonCardState extends State<ButtonCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,7 +39,7 @@ class _InfoCardState extends State<InfoCard> {
   }
 }
 
-Widget renderTitleStatus(InfoCardViewModel viewModel) {
+Widget renderTitleStatus(ButtonCardViewModel viewModel) {
   return Container(
     margin: EdgeInsets.only(top: 16),
     padding: EdgeInsets.symmetric(horizontal: 16),
@@ -64,19 +65,21 @@ Widget renderTitleStatus(InfoCardViewModel viewModel) {
             ),
           ],
         ),
-        Text(
-          viewModel.status,
-          style: TextStyle(
-            fontSize: 13,
-            color: Color(0xFF999999),
-          ),
+
+        ElevatedButton.icon( onPressed: () {
+          viewModel.onButtonClicked();
+        }, icon: Icon(Icons.build, size: 18),
+          label: Text("동작"),
+          style: TextButton.styleFrom(
+            primary: Colors.green[200],
+            backgroundColor: Colors.green[400],),
         ),
       ],
     ),
   );
 }
 
-Widget renderText(InfoCardViewModel viewModel) {
+Widget renderText(ButtonCardViewModel viewModel) {
   return Container(
     margin: EdgeInsets.only(top: 16, bottom : 16),
     padding: EdgeInsets.symmetric(horizontal: 16),

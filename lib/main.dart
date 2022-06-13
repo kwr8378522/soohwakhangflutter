@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soohwakhangflutter/widget/ButtonCard.dart';
 import 'package:soohwakhangflutter/widget/InfoCard.dart';
 
 import 'manager.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: '수확행 SERVICE',
       theme: ThemeData(
         fontFamily: 'Jalnan',
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
       home: const MyHomePage(title: '수확행 SERVICE'),
     );
@@ -35,9 +36,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  double ROW_WIDTH = 400.0;
-  double ROW_HEIGHT = 50.0;
-
   var manager = Manager();
 
   @override
@@ -47,118 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
           child: Column(
             children: <Widget>[
-
-              SizedBox(
-                height: 10.0,
-              ),
-
-              Container(
-                decoration: BoxDecoration(
-                  color: manager.data.serverBackgroundColor,
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                ),
-                width: ROW_WIDTH,
-                height: ROW_HEIGHT,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Text(manager.data.serverStatusText),
-
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          setState (() {
-                            manager.updateCurrentStatus();
-                          });
-                        }, icon: Icon(Icons.refresh, size: 18),
-                        label: Text("정보 받아오기"),
-                      )
-                    ]
-                ),
-              ),
-
-              SizedBox(
-                height: 10.0,
-              ),
-
-              Container(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton.icon(
-                        onPressed: () {
-
-                        }, icon: Icon(Icons.build, size: 18),
-                        label: Text("AI 진단"),
-                      ),
-
-                      ElevatedButton.icon(
-                        onPressed: () {
-
-                        }, icon: Icon(Icons.trending_up, size: 18),
-                        label: Text("상세 정보"),
-                      ),
-                    ]
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.red[400],
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                ),
-                width: ROW_WIDTH,
-                height: ROW_HEIGHT,
-              ),
-
+              ButtonCard(viewModel: manager.updateInfoViewModel),
               InfoCard(viewModel: manager.tempuratureViewModel),
               InfoCard(viewModel: manager.humidViewModel),
-
-              Container(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton( onPressed: () {
-                      }, child: Text('WATERPUMP'), ),
-
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          manager.activate(manager.data.WATERPUMP);
-                        }, icon: Icon(Icons.build, size: 18),
-                        label: Text("동작"),
-                      )
-                    ]
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.red[400],
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                ),
-                width: ROW_WIDTH,
-                height: ROW_HEIGHT,
-              ),
-
-              const SizedBox(
-                height: 10.0,
-              ),
-
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.red[400],
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                ),
-                width: ROW_WIDTH,
-                height: ROW_HEIGHT,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      ElevatedButton( onPressed: () {
-                      }, child: Text('LED'), ),
-
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          manager.activate(manager.data.LED);
-                        }, icon: Icon(Icons.build, size: 18),
-                        label: Text(manager.data.ledStatusText),
-                      )
-                    ]
-                ),
-              ),
+              ButtonCard(viewModel: manager.ledViewModel),
+              ButtonCard(viewModel: manager.waterpumpViewModel),
             ],
           )
       ),
