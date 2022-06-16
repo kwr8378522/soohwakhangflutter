@@ -1,3 +1,7 @@
+import '../manager.dart';
+
+import 'package:soohwakhangflutter/manager.dart';
+
 class InfoCardViewModel {
 
   var title = "title";

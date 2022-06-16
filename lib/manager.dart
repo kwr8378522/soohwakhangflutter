@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soohwakhangflutter/viewmodel/ButtonCardViewModel.dart';
 import 'package:soohwakhangflutter/viewmodel/InfoCardViewModel.dart';
 import 'package:soohwakhangflutter/viewmodel/TitleItemViewModel.dart';
+import 'package:soohwakhangflutter/viewmodel/UpdateButtonCardViewModel.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'dart:convert';
@@ -12,7 +13,7 @@ class Manager {
 
   var titleItemViewModel = TitleItemViewModel();
 
-  var updateInfoViewModel = ButtonCardViewModel();
+  var updateInfoViewModel = UpdateButtonCardViewModel();
 
   var tempuratureViewModel = InfoCardViewModel();
   var humidViewModel = InfoCardViewModel();
@@ -27,11 +28,11 @@ class Manager {
   bool isWebSocketRunning = false;
 
   Manager() {
-
     updateInfoViewModel.title = "서버";
-    updateInfoViewModel.buttonText = "연결하기";
+    updateInfoViewModel.buttonText = "정보 받아오기";
     updateInfoViewModel.buttonIcon = Icons.cached;
     updateInfoViewModel.description = "서버로부터 최신 정보를 받아올 수 있어요.";
+    updateInfoViewModel.setCallback(updateInfoButtonCallback);
 
     tempuratureViewModel.title = "온도";
     tempuratureViewModel.status = "알 수 없음";
@@ -53,13 +54,31 @@ class Manager {
     ledViewModel.title = "LED";
     ledViewModel.buttonIcon = Icons.lightbulb;
     ledViewModel.description = "온도가 낮을 때, LED를 켜면 온도를 상승시킬 수 있어요";
+    ledViewModel.setCallback(ledButtonCallback);
 
     waterpumpViewModel.title = "워터펌프";
     waterpumpViewModel.buttonIcon = Icons.invert_colors;
     waterpumpViewModel.description = "습도가 낮을 때, waterpump를 켜면 습도를 높일 수 있어요";
+    waterpumpViewModel.setCallback(waterpumpButtonCallback);
+  }
+
+  void updateInfoButtonCallback() {
+    updateCurrentStatus();
+
+    updateInfoViewModel.description = "서버로부터 정보를 받아왔어요!";
+  }
+
+  void ledButtonCallback() {
+    activate(data.LED);
+  }
+
+  void waterpumpButtonCallback() {
+    activate(data.WATERPUMP);
   }
 
   void updateCurrentStatus() {
+    print("updateCurrentStatus");
+
     startStreamWithListener((event) {
       print(event);
       updateText(event);
@@ -75,41 +94,45 @@ class Manager {
   }
 
   void activate(type) {
-    var messageString = "";
-    if (type == data.LED) {
-      messageString = "led";
-    } else {
-      messageString = "water";
-    }
-
     startStreamWithListener((event) {
       print(event);
       finishStream();
     });
 
-    if (data.ledStatus == 1) {
-      channel!.sink.add(
-          jsonEncode({
-            "type":"action",
-            "message":"led",
-            "payload":{
-              "value":0
-            }
-          })
-      );
-      data.ledStatus = 0;
-    } else {
-      channel!.sink.add(
-          jsonEncode({
-            "type":"action",
-            "message":"led",
-            "payload":{
-              "value":1
-            }
-          })
-      );
-      data.ledStatus = 1;
-    }
+    channel!.sink.add(
+        jsonEncode({
+          "type":"request",
+          "message":"get_history",
+          "payload":{
+            "fromDate":"2022-01-01 00:00",
+            "toDate":"2022-01-02 00:00"
+          }
+        })
+    );
+
+    // if (data.ledStatus == 1) {
+    //   channel!.sink.add(
+    //       jsonEncode({
+    //         "type":"action",
+    //         "message":"led",
+    //         "payload":{
+    //           "value":0
+    //         }
+    //       })
+    //   );
+    //   data.ledStatus = 0;
+    // } else {
+    //   channel!.sink.add(
+    //       jsonEncode({
+    //         "type":"action",
+    //         "message":"led",
+    //         "payload":{
+    //           "value":1
+    //         }
+    //       })
+    //   );
+    //   data.ledStatus = 1;
+    // }
   }
 
   void startStreamWithListener(listener) async {
@@ -133,21 +156,10 @@ class Manager {
     var value = jsonDecode(event)['value'];
 
     if (state == "success") {
-      data.serverStatusText = "서버 상태 : 연결됨";
-      data.serverBackgroundColor = Colors.green[400];
-
-      tempuratureViewModel.status = value['temperature'];
-      humidViewModel.status = value['humid'];
-
-      if (value['led'] == 1) {
-        data.ledStatusText = "상태 : 켜짐";
-        data.ledStatus = 1;
-      } else {
-        data.ledStatusText = "상태 : 꺼짐";
-        data.ledStatus = 0;
-      }
-    } else {
-      data.serverStatusText = "서버 상태 : 연결 실패";
+      tempuratureViewModel.status = value['temperature'].toString();
+      soilMoistureViewModel.status = value['soil_moisture'].toString();
+      humidViewModel.status = value['humid'].toString();
+      data.ledStatus = value['led'];
     }
   }
 

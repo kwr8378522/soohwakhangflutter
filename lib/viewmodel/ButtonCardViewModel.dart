@@ -7,7 +7,13 @@ class ButtonCardViewModel {
   var buttonText = "켜기";
   var description = "설명";
 
-  void onButtonClicked() {
+  late Function callback;
 
+  void setCallback(callback) {
+    this.callback = callback;
+  }
+
+  void onButtonClicked() {
+    callback.call();
   }
 }
