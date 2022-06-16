@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:soohwakhangflutter/SooHwakData.dart';
 import 'package:soohwakhangflutter/viewmodel/ButtonCardViewModel.dart';
+import 'package:soohwakhangflutter/viewmodel/GraphCardViewModel.dart';
 import 'package:soohwakhangflutter/viewmodel/InfoCardViewModel.dart';
 import 'package:soohwakhangflutter/viewmodel/TitleItemViewModel.dart';
-import 'package:soohwakhangflutter/viewmodel/UpdateButtonCardViewModel.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'dart:convert';
@@ -13,7 +15,7 @@ class Manager {
 
   var titleItemViewModel = TitleItemViewModel();
 
-  var updateInfoViewModel = UpdateButtonCardViewModel();
+  var updateInfoViewModel = ButtonCardViewModel();
 
   var tempuratureViewModel = InfoCardViewModel();
   var humidViewModel = InfoCardViewModel();
@@ -21,6 +23,8 @@ class Manager {
 
   var ledViewModel = ButtonCardViewModel();
   var waterpumpViewModel = ButtonCardViewModel();
+
+  var graphViewModel = GraphCardViewModel();
 
   var data = Data();
 
@@ -58,7 +62,7 @@ class Manager {
 
     waterpumpViewModel.title = "워터펌프";
     waterpumpViewModel.buttonIcon = Icons.invert_colors;
-    waterpumpViewModel.description = "습도가 낮을 때, waterpump를 켜면 습도를 높일 수 있어요";
+    waterpumpViewModel.description = "습도가 낮을 때, 워터펌프를 켜면 토양 수분량을 늘릴 수 있어요";
     waterpumpViewModel.setCallback(waterpumpButtonCallback);
   }
 
@@ -69,10 +73,12 @@ class Manager {
   }
 
   void ledButtonCallback() {
+    print("request led change");
     activate(data.LED);
   }
 
   void waterpumpButtonCallback() {
+    print("request waterpump change");
     activate(data.WATERPUMP);
   }
 
@@ -91,48 +97,62 @@ class Manager {
           "message":"get current data"}
         )
     );
+
+    Future.delayed(Duration(seconds: 5), (){
+      updateGraphStatus();
+    });
+  }
+
+  void updateGraphStatus() {
+    print("updateGraphStatus");
+
+    updateGraph();
+
+    // startStreamWithListener((event) {
+    //   updateGraph();
+    //   finishStream();
+    // });
+
+    // channel!.sink.add(
+    //     jsonEncode({
+    //       "type":"request",
+    //       "message":"get_history",
+    //       "payload":{
+    //         "fromDate":"2022-01-01 00:00",
+    //         "toDate":"2022-01-02 00:00"
+    //       }
+    //     })
+    // );
   }
 
   void activate(type) {
     startStreamWithListener((event) {
       print(event);
-      finishStream();
     });
 
-    channel!.sink.add(
-        jsonEncode({
-          "type":"request",
-          "message":"get_history",
-          "payload":{
-            "fromDate":"2022-01-01 00:00",
-            "toDate":"2022-01-02 00:00"
-          }
-        })
-    );
-
-    // if (data.ledStatus == 1) {
-    //   channel!.sink.add(
-    //       jsonEncode({
-    //         "type":"action",
-    //         "message":"led",
-    //         "payload":{
-    //           "value":0
-    //         }
-    //       })
-    //   );
-    //   data.ledStatus = 0;
-    // } else {
-    //   channel!.sink.add(
-    //       jsonEncode({
-    //         "type":"action",
-    //         "message":"led",
-    //         "payload":{
-    //           "value":1
-    //         }
-    //       })
-    //   );
-    //   data.ledStatus = 1;
-    // }
+    if (data.ledStatus == 1) {
+      channel!.sink.add(
+          jsonEncode({
+            "type":"action",
+            "message":"led",
+            "payload":{
+              "value":0
+            }
+          })
+      );
+      data.ledStatus = 0;
+    } else {
+      channel!.sink.add(
+          jsonEncode({
+            "type":"action",
+            "message":"led",
+            "payload":{
+              "value":1
+            }
+          })
+      );
+      data.ledStatus = 1;
+    }
   }
 
   void startStreamWithListener(listener) async {
@@ -140,12 +160,13 @@ class Manager {
       return;
     }
 
-    channel = WebSocketChannel.connect(Uri.parse(data.URL),);
+    channel = WebSocketChannel.connect(Uri.parse(data.URL));
     channel!.stream.listen(listener,
       onDone: () {
         isWebSocketRunning = false;
       },
       onError: (err) {
+        print("websocket error $err");
         isWebSocketRunning = false;
       },
     );
@@ -156,10 +177,32 @@ class Manager {
     var value = jsonDecode(event)['value'];
 
     if (state == "success") {
-      tempuratureViewModel.status = value['temperature'].toString();
+      tempuratureViewModel.status = value['temperature'].toString() + "°C";
       soilMoistureViewModel.status = value['soil_moisture'].toString();
-      humidViewModel.status = value['humid'].toString();
+      humidViewModel.status = value['humid'].toString() + "%";
       data.ledStatus = value['led'];
+    }
+  }
+
+  void updateGraph() {
+    var jsonString = '{"type":"response","state":"success","valueType":"array","count":3,"value":[{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700},{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700},{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700}]}';
+    Map<String, dynamic> json = jsonDecode(jsonString);
+
+    var state = jsonDecode(jsonString)['state'];
+    List<SooHwakData> resultList = [];
+
+    if (state == "success") {
+      print("here");
+      for (var data in json['value']) {
+        resultList.add(SooHwakData(
+            DateFormat("yyyy-MM-dd hh:mm").parse(data['date']),
+            data['temperature'],
+            data['humid'],
+            data['soil_moisture']
+        ));
+      }
+
+      graphViewModel.dataList = List.from(resultList);
     }
   }
 

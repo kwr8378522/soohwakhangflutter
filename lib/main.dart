@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soohwakhangflutter/widget/ButtonCard.dart';
+import 'package:soohwakhangflutter/widget/GraphCard.dart';
 import 'package:soohwakhangflutter/widget/InfoCard.dart';
 import 'package:soohwakhangflutter/widget/TitleItem.dart';
 
@@ -124,11 +125,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             ),
+
             InfoCard(viewModel: manager.tempuratureViewModel),
             InfoCard(viewModel: manager.humidViewModel),
             InfoCard(viewModel: manager.soilMoistureViewModel),
             ButtonCard(viewModel: manager.ledViewModel),
             ButtonCard(viewModel: manager.waterpumpViewModel),
+            GraphCard(viewModel: manager.graphViewModel),
           ],
         )
     );
