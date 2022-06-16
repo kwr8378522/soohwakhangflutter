@@ -17,7 +17,7 @@ class SoilMoistureGraphCard extends StatelessWidget {
         margin: EdgeInsets.all(16),
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.green[200],
+          color: Colors.white,
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
@@ -40,7 +40,7 @@ class SoilMoistureGraphCard extends StatelessWidget {
               Colors.green[400]!,
             ],
             tooltipBehavior: TooltipBehavior(enable: true),
-            backgroundColor: Colors.green[100],
+            backgroundColor: Colors.white,
             //Specifying date time interval type as hours
             primaryXAxis: DateTimeAxis(
                 labelStyle: TextStyle(

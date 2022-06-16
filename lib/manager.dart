@@ -148,6 +148,8 @@ class Manager {
   }
 
   void sendHardwareRequest(type) {
+    connectServerIfNotConnected();
+
     if (data.ledStatus == 1) {
       channel?.sink.add(
           jsonEncode({
