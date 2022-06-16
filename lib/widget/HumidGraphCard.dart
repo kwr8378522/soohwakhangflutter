@@ -5,8 +5,8 @@ import 'package:soohwakhangflutter/SooHwakData.dart';
 import 'package:soohwakhangflutter/viewmodel/GraphCardViewModel.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class GraphCard extends StatelessWidget {
-  GraphCard({Key? key, required this.viewModel}) : super(key: key);
+class HumidGraphCard extends StatelessWidget {
+  HumidGraphCard({Key? key, required this.viewModel}) : super(key: key);
 
   final GraphCardViewModel viewModel;
 
@@ -29,7 +29,7 @@ class GraphCard extends StatelessWidget {
         ),
         child: SfCartesianChart(
             title: ChartTitle(
-                text: '온도',
+                text: '습도',
                 textStyle: TextStyle(
                   color: Colors.green[400],
                   fontFamily: 'Jalnan',
@@ -53,7 +53,7 @@ class GraphCard extends StatelessWidget {
                 dateFormat: DateFormat.Md().add_Hm(),
                 intervalType: DateTimeIntervalType.auto),
             primaryYAxis: NumericAxis(
-              labelFormat: '{value}°C',
+              labelFormat: '{value}%',
               labelStyle: TextStyle(
                 color: Colors.green[400],
                 fontFamily: 'Jalnan',
@@ -65,8 +65,8 @@ class GraphCard extends StatelessWidget {
                 enableTooltip: true,
                 dataSource: viewModel.dataList,
                 xValueMapper: (SooHwakData soohwak, _) => soohwak.date,
-                yValueMapper: (SooHwakData soohwak, _) => soohwak.temperature,
-                name: "온도",
+                yValueMapper: (SooHwakData soohwak, _) => soohwak.humid,
+                name: "습도",
               )
             ]));
   }

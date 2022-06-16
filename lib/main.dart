@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:soohwakhangflutter/widget/ButtonCard.dart';
 import 'package:soohwakhangflutter/widget/GraphCard.dart';
+import 'package:soohwakhangflutter/widget/HumidGraphCard.dart';
+import 'package:soohwakhangflutter/widget/SoilMoistureGraphCard.dart';
 import 'package:soohwakhangflutter/widget/InfoCard.dart';
 import 'package:soohwakhangflutter/widget/TitleItem.dart';
 
@@ -39,6 +41,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   var manager = Manager();
+
+  @override
+  void dispose() {
+    manager.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +140,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ButtonCard(viewModel: manager.ledViewModel),
             ButtonCard(viewModel: manager.waterpumpViewModel),
             GraphCard(viewModel: manager.graphViewModel),
+            HumidGraphCard(viewModel: manager.graphViewModel),
+            SoilMoistureGraphCard(viewModel: manager.graphViewModel),
           ],
         )
     );

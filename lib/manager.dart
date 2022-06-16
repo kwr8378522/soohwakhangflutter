@@ -33,7 +33,7 @@ class Manager {
 
   Manager() {
     updateInfoViewModel.title = "서버";
-    updateInfoViewModel.buttonText = "정보 받아오기";
+    updateInfoViewModel.buttonText = "새로고침";
     updateInfoViewModel.buttonIcon = Icons.cached;
     updateInfoViewModel.description = "서버로부터 최신 정보를 받아올 수 있어요.";
     updateInfoViewModel.setCallback(updateInfoButtonCallback);
@@ -66,72 +66,90 @@ class Manager {
     waterpumpViewModel.setCallback(waterpumpButtonCallback);
   }
 
-  void updateInfoButtonCallback() {
-    updateCurrentStatus();
+  void dispose() {
+    disconnectFromServer();
+  }
 
-    updateInfoViewModel.description = "서버로부터 정보를 받아왔어요!";
+  void connectServerIfNotConnected() {
+    if (!isWebSocketRunning) {
+      print("connect server");
+      channel = WebSocketChannel.connect(Uri.parse(data.URL));
+      isWebSocketRunning = true;
+      updateInfoViewModel.description = "서버로부터 정보를 받아왔어요!";
+      addStreamListener();
+    }
+  }
+
+  void disconnectFromServer() {
+    channel?.sink.close();
+    isWebSocketRunning = false;
+  }
+
+  void addStreamListener() {
+    channel?.stream.listen(
+            (data) {
+          onDataReceive(data);
+        }
+    );
+  }
+
+  void onDataReceive(data) {
+    var state = jsonDecode(data)['state'];
+    var response = jsonDecode(data)['requested_message'];
+
+    if (state == 'success') {
+
+      //print(data);
+
+      if (response == 'get current data') {
+        updateTextValues(data);
+      }
+      if (response == 'get_history') {
+        updateGraphValues(data);
+      }
+    }
+  }
+
+  void updateInfoButtonCallback() {
+    connectServerIfNotConnected();
+
+    print("info request");
+    sendInfoRequest();
+    sendHistoryRequest();
   }
 
   void ledButtonCallback() {
     print("request led change");
-    activate(data.LED);
+    sendHardwareRequest(data.LED);
   }
 
   void waterpumpButtonCallback() {
     print("request waterpump change");
-    activate(data.WATERPUMP);
+    sendHardwareRequest(data.WATERPUMP);
   }
 
-  void updateCurrentStatus() {
-    print("updateCurrentStatus");
-
-    startStreamWithListener((event) {
-      print(event);
-      updateText(event);
-      finishStream();
-    });
-
-    channel!.sink.add(
+// Update Temperature, Humid..
+  void sendInfoRequest() {
+    channel?.sink.add(
         jsonEncode({
           "type":"request",
           "message":"get current data"}
         )
     );
-
-    Future.delayed(Duration(seconds: 5), (){
-      updateGraphStatus();
-    });
   }
 
-  void updateGraphStatus() {
-    print("updateGraphStatus");
-
-    updateGraph();
-
-    // startStreamWithListener((event) {
-    //   updateGraph();
-    //   finishStream();
-    // });
-
-    // channel!.sink.add(
-    //     jsonEncode({
-    //       "type":"request",
-    //       "message":"get_history",
-    //       "payload":{
-    //         "fromDate":"2022-01-01 00:00",
-    //         "toDate":"2022-01-02 00:00"
-    //       }
-    //     })
-    // );
+  void sendHistoryRequest() {
+    channel?.sink.add(
+        jsonEncode({
+          "type":"request",
+          "message":"get_history"
+        })
+    );
   }
 
-  void activate(type) {
-    startStreamWithListener((event) {
-      print(event);
-    });
-
+  void sendHardwareRequest(type) {
     if (data.ledStatus == 1) {
-      channel!.sink.add(
+      channel?.sink.add(
           jsonEncode({
             "type":"action",
             "message":"led",
@@ -142,7 +160,7 @@ class Manager {
       );
       data.ledStatus = 0;
     } else {
-      channel!.sink.add(
+      channel?.sink.add(
           jsonEncode({
             "type":"action",
             "message":"led",
@@ -155,26 +173,9 @@ class Manager {
     }
   }
 
-  void startStreamWithListener(listener) async {
-    if (isWebSocketRunning) {
-      return;
-    }
-
-    channel = WebSocketChannel.connect(Uri.parse(data.URL));
-    channel!.stream.listen(listener,
-      onDone: () {
-        isWebSocketRunning = false;
-      },
-      onError: (err) {
-        print("websocket error $err");
-        isWebSocketRunning = false;
-      },
-    );
-  }
-
-  void updateText(event) {
-    var state = jsonDecode(event)['state'];
-    var value = jsonDecode(event)['value'];
+  void updateTextValues(jsonString) {
+    var state = jsonDecode(jsonString)['state'];
+    var value = jsonDecode(jsonString)['value'];
 
     if (state == "success") {
       tempuratureViewModel.status = value['temperature'].toString() + "°C";
@@ -184,39 +185,23 @@ class Manager {
     }
   }
 
-  void updateGraph() {
-    var jsonString = '{"type":"response","state":"success","valueType":"array","count":3,"value":[{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700},{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700},{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700}]}';
+  void updateGraphValues(jsonString) {
+    //var jsonString = '{"type":"response","state":"success","valueType":"array","count":3,"value":[{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700},{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700},{"date":"2022-01-01 00:00","humid":1,"temperature":32,"soil_moisture":700}]}';
     Map<String, dynamic> json = jsonDecode(jsonString);
+    List<SooHwakData> list = [];
 
-    var state = jsonDecode(jsonString)['state'];
-    List<SooHwakData> resultList = [];
-
-    if (state == "success") {
-      print("here");
-      for (var data in json['value']) {
-        resultList.add(SooHwakData(
-            DateFormat("yyyy-MM-dd hh:mm").parse(data['date']),
-            data['temperature'],
-            data['humid'],
-            data['soil_moisture']
-        ));
-      }
-
-      graphViewModel.dataList = List.from(resultList);
+    for (var data in json['value']) {
+      list.add(SooHwakData(
+          DateFormat("yyyy-MM-dd HH:mm").parse(data['date']),
+          data['temperature'],
+          data['humid'],
+          data['soil_moisture']
+      ));
     }
-  }
 
-  void sendData() {
-    channel!.sink.add(
-        jsonEncode({
-          "type":"request",
-          "message":"get current data"}
-        )
-    );
-  }
+    print(list.length);
 
-  void finishStream() {
-    channel!.sink.close();
-    isWebSocketRunning = false;
+    graphViewModel.dataList = List.from(list);
+
   }
 }
